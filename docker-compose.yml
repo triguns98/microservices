@@ -1,0 +1,40 @@
+version: "3.7"
+
+services:
+
+  books_ms:
+    build: ./books_ms
+    container_name: books_ms
+    volumes:
+      - ./books_ms/:/app/
+    restart: always
+    depends_on:
+      - database
+    expose:
+      - 8080
+
+  comments_ms:
+    build: ./comments_ms
+    container_name: comments_ms
+    restart: always
+    depends_on:
+      - database
+    expose:
+      - 8081
+
+  database:
+    image: postgres:13-alpine
+    restart: always
+    expose:
+      - 5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=books_ms
+
+  nginx:
+    build: ./nginx
+    container_name: nginx
+    restart: always
+    ports:
+      - "80:80"
